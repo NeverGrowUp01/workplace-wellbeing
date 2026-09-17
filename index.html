@@ -95,13 +95,30 @@
           <div>
             <label class="block font-semibold text-slate-700 mb-1">Industry Sector</label>
             <select id="org-industry" onchange="updateOrgDetails()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-nguYellow">
-              <option value="Tech / Software">Technology & IT Services</option>
-              <option value="Healthcare / Pharma">Healthcare & Life Sciences</option>
-              <option value="Financial Services">Financial & Professional Services</option>
-              <option value="Manufacturing & Operations">Manufacturing & Logistics</option>
-              <option value="Retail & Hospitality">Retail & Consumer Goods</option>
-              <option value="Public Sector / Education">Public Sector & Education</option>
-              <option value="Other">Other Industry</option>
+              <option value="Agriculture">Agriculture (Dairy, Farming, Fishery, etc)</option>
+              <option value="Arts">Arts (Performing Arts, Photography, Graphic Designing, etc)</option>
+              <option value="Construction">Construction (Civil Engineering, Materials, etc)</option>
+              <option value="Consumer Goods">Consumer Goods (Apparel & Fashion, FMCG, etc)</option>
+              <option value="Corporate Services">Corporate Services (HR Services, Business Supplies, Management Consulting, etc)</option>
+              <option value="Design">Design (Architecture & Planning, Graphic Designing, Fashion Designing, etc)</option>
+              <option value="Education">Education (E-learning, Teaching, Research, etc)</option>
+              <option value="Energy & Mining">Energy & Mining (Metals, Oil & Petrol, Utilities, etc)</option>
+              <option value="Entertainment">Entertainment (Animation, Media Production, Music, etc)</option>
+              <option value="Finance">Finance (Banking, Insurance, Investments, Venture Capitals, etc)</option>
+              <option value="Hardware & Networking">Hardware & Networking (Telecommunications, Nanotech, Computer Hardware, etc)</option>
+              <option value="Health Care">Health Care (Medical Practice, Mental Health Care, Pharmaceuticals, etc)</option>
+              <option value="Legal">Legal (Law Practice, Legal Services, Alternate Dispute Resolution, etc)</option>
+              <option value="Manufacturing">Manufacturing (Automotive, Textiles, Food Products, Plastics, etc)</option>
+              <option value="Media & Communications">Media & Communications (Marketing & Advertising, Market Research, PR, etc)</option>
+              <option value="Nonprofit">Nonprofit (Fundraising, NGOs, Religious Insitutions, Think tanks, etc)</option>
+              <option value="Public Administration">Public Administration (Government Administration & Relations, Public Policy, etc)</option>
+              <option value="Public Safety">Public Safety (Law Enforcement, Military, Private Security, etc)</option>
+              <option value="Real Estate">Real Estate</option>
+              <option value="Recreation & Travel">Recreation & Travel (Hospitality, Airlines/Aviation, Sports, etc)</option>
+              <option value="Retail">Retail (Supermarkets, Wholesale, etc)</option>
+              <option value="Software & IT Services" selected>Software & IT Services (Computer Software, Cyber Sercurity, etc)</option>
+              <option value="Transportation & Logistics">Transportation & Logistics (Import & Export, Delivery Services, etc)</option>
+              <option value="Wellness & Fitness">Wellness & Fitness (Supplements, Wellness Accessories, etc)</option>
             </select>
           </div>
         </div>
@@ -604,7 +621,7 @@
     // Audit State Store
     const state = {
       headcount: 250,
-      industry: "Tech / Software",
+      industry: "Software & IT Services",
 
       // Part A: Vitality & Resilience
       exh_pct: 65, exh_scale: 3.5,
@@ -943,26 +960,22 @@
 
         // The browser has handed the POST to Apps Script. We do not try to read
         // the cross-origin response; the backend writes the submission to Sheets.
-        // Reveal the dashboard only after the respondent details have been submitted.
+        // Move to the analysis page after the respondent details have been submitted.
+        // The input page is hidden entirely; the analysis occupies the full content area.
         const inputPanel = document.getElementById('input-panel');
         const dashboardPanel = document.getElementById('dashboard-panel');
 
-        inputPanel.classList.remove('lg:col-span-12');
-        inputPanel.classList.add('lg:col-span-6');
+        inputPanel.classList.add('hidden');
         dashboardPanel.classList.remove('hidden');
+        dashboardPanel.classList.remove('lg:col-span-6');
+        dashboardPanel.classList.add('lg:col-span-12');
 
-        // Recalculate after the panel becomes visible so the charts size correctly.
+        // Recalculate after the analysis page becomes visible so the charts size correctly.
         requestAnimationFrame(() => {
           calculateAll();
           matrixChart?.resize();
           radarChart?.resize();
         });
-
-        document.getElementById('modal-lead-name').innerText = name;
-        document.getElementById('modal-lead-company').innerText = company;
-        document.getElementById('modal-email').innerText = email;
-        document.getElementById('modal-headcount').innerText = `${state.headcount} FTEs (${state.industry})`;
-        document.getElementById('submit-modal').classList.remove('hidden');
 
         setTimeout(() => {
           form.remove();
