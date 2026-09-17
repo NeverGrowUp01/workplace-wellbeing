@@ -866,11 +866,14 @@
       document.getElementById('roadmap-p3').innerHTML = render(p3, 'Annual re-audit benchmark');
     }
 
-    // Backend endpoint: replace this with your deployed Google Apps Script /exec URL.
+    // Backend endpoint: paste your deployed Google Apps Script /exec URL here.
+    // IMPORTANT: use the URL ending in /exec, not /dev.
     const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbxdFTYYKkyYc47o9fnuwHGSx_I0hIROPadUgmvpuSGdHzJji_iK9E5CdPtYJXQnL3TR8A/exec';
 
     // Lead Form Handler
-    async function handleFormSubmit(e) {
+    // Uses a normal POST form submission to avoid browser CORS/preflight problems
+    // when the calculator is hosted on GitHub Pages and the backend is Apps Script.
+    function handleFormSubmit(e) {
       e.preventDefault();
 
       const name = document.getElementById('lead-name').value.trim();
@@ -878,7 +881,7 @@
       const company = document.getElementById('lead-company').value.trim();
       const email = document.getElementById('lead-email').value.trim();
       const phone = document.getElementById('lead-phone').value.trim();
-      const submitButton = document.querySelector('#contact-form button[type=\"submit\"]');
+      const submitButton = document.querySelector('#contact-form button[type="submit"]');
 
       if (!BACKEND_URL || BACKEND_URL.includes('PASTE_YOUR_')) {
         alert('The audit is ready, but the data-saving connection has not been configured yet. Please contact the site owner.');
@@ -899,7 +902,8 @@
           affectedSub: document.getElementById('kpi-affected-sub')?.innerText || '',
           overviewTitle: document.getElementById('overview-title')?.innerText || '',
           overviewDescription: document.getElementById('overview-desc')?.innerText || '',
-          priorityServices: Array.from(document.querySelectorAll('#service-recommendations-container > div')).map(el => el.innerText.trim()).filter(Boolean),
+          priorityServices: Array.from(document.querySelectorAll('#service-recommendations-container > div'))
+            .map(el => el.innerText.trim()).filter(Boolean),
           roadmap: {
             phase1: document.getElementById('roadmap-p1')?.innerText || '',
             phase2: document.getElementById('roadmap-p2')?.innerText || '',
@@ -912,31 +916,50 @@
       submitButton.style.opacity = '0.6';
       submitButton.innerHTML = '<span>Saving audit…</span>';
 
+      // Create a hidden iframe and regular HTML form. This is intentionally used
+      // instead of fetch() so GitHub Pages can POST to Apps Script without a CORS
+      // preflight request.
+      const iframeName = 'audit-submit-frame-' + Date.now();
+      const iframe = document.createElement('iframe');
+      iframe.name = iframeName;
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = BACKEND_URL;
+      form.target = iframeName;
+      form.style.display = 'none';
+
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = 'payload';
+      input.value = JSON.stringify(payload);
+      form.appendChild(input);
+      document.body.appendChild(form);
+
       try {
-        // Send without a CORS preflight. sendBeacon is designed for small POSTs
-        // and returns immediately instead of making the client wait for Apps Script.
-        const queued = navigator.sendBeacon(
-          BACKEND_URL,
-          new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' })
-        );
+        form.submit();
 
-        if (!queued) {
-          throw new Error('The browser could not queue the submission.');
-        }
-
+        // The browser has handed the POST to Apps Script. We do not try to read
+        // the cross-origin response; the backend writes the submission to Sheets.
         document.getElementById('modal-lead-name').innerText = name;
         document.getElementById('modal-lead-company').innerText = company;
         document.getElementById('modal-email').innerText = email;
         document.getElementById('modal-headcount').innerText = `${state.headcount} FTEs (${state.industry})`;
         document.getElementById('submit-modal').classList.remove('hidden');
+
+        setTimeout(() => {
+          form.remove();
+          iframe.remove();
+        }, 5000);
       } catch (error) {
         console.error('Audit submission failed:', error);
-        alert('We could not save your audit. Please check your internet connection and try again.');
-      } finally {
         submitButton.disabled = false;
-        submitButton.style.opacity = '';
-        submitButton.innerHTML = '<i data-lucide=\"send\" class=\"w-4 h-4 text-slate-900\"></i> Submit Audit & Request Customized Implementation Plan';
-        if (window.lucide) lucide.createIcons();
+        submitButton.style.opacity = '1';
+        submitButton.innerHTML = '<i data-lucide="send" class="w-4 h-4 text-slate-900"></i> Submit Audit & Request Customized Implementation Plan';
+        lucide.createIcons();
+        alert('We could not submit the audit. Please try again.');
       }
     }
 
