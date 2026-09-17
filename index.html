@@ -47,19 +47,12 @@
     ::-webkit-scrollbar-track { background: #fef9c3; }
     ::-webkit-scrollbar-thumb { background: #F4B842; border-radius: 4px; }
     ::-webkit-scrollbar-thumb:hover { background: #EE8341; }
-
-    @media print {
-      .no-print { display: none !important; }
-      .print-only { display: block !important; }
-      body { background: white; color: black; }
-      .shadow-card { box-shadow: none !important; border: 1px solid #e2e8f0; }
-    }
   </style>
 </head>
 <body class="bg-amber-50/40 text-slate-800 min-h-screen flex flex-col antialiased">
 
   <!-- Header -->
-  <header class="bg-slate-900 border-b-4 border-nguYellow text-white sticky top-0 z-50 no-print shadow-md">
+  <header class="bg-slate-900 border-b-4 border-nguYellow text-white sticky top-0 z-50 shadow-md">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       <div class="flex items-center space-x-3">
         <div class="p-2 bg-nguYellow text-slate-900 rounded-xl font-black flex items-center justify-center shadow">
@@ -73,7 +66,6 @@
           <p class="text-xs text-amber-200/80">Targeted Diagnostic & Service Deployment Planner</p>
         </div>
       </div>
-      
     </div>
   </header>
 
@@ -81,7 +73,7 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
 
     <!-- LEFT COLUMN: Input Form -->
-    <section class="lg:col-span-6 space-y-6 no-print">
+    <section class="lg:col-span-6 space-y-6">
       
       <!-- SECTION 1: Organization Size & Profile -->
       <div class="bg-white p-5 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-4">
@@ -601,7 +593,7 @@
   </div>
 
   <!-- Footer -->
-  <footer class="bg-white border-t border-amber-100 py-4 mt-auto no-print">
+  <footer class="bg-white border-t border-amber-100 py-4 mt-auto">
     <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
       Workplace Wellbeing Audit Calculator • Never Grow Up Design Guidelines & Diagnostic Framework
     </div>
@@ -874,20 +866,75 @@
       document.getElementById('roadmap-p3').innerHTML = render(p3, 'Annual re-audit benchmark');
     }
 
+    // Backend endpoint: replace this with your deployed Google Apps Script /exec URL.
+    const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbz9cj7whL7x1WFsTVeL6YpozFVXaSf0z2LyJa511eyynseBGVKEewMHoXAEGu_QifFqHA/exec';
+
     // Lead Form Handler
-    function handleFormSubmit(e) {
+    async function handleFormSubmit(e) {
       e.preventDefault();
-      
-      const name = document.getElementById('lead-name').value;
-      const company = document.getElementById('lead-company').value;
-      const email = document.getElementById('lead-email').value;
 
-      document.getElementById('modal-lead-name').innerText = name;
-      document.getElementById('modal-lead-company').innerText = company;
-      document.getElementById('modal-email').innerText = email;
-      document.getElementById('modal-headcount').innerText = `${state.headcount} FTEs (${state.industry})`;
+      const name = document.getElementById('lead-name').value.trim();
+      const title = document.getElementById('lead-title').value.trim();
+      const company = document.getElementById('lead-company').value.trim();
+      const email = document.getElementById('lead-email').value.trim();
+      const phone = document.getElementById('lead-phone').value.trim();
+      const submitButton = document.querySelector('#contact-form button[type=\"submit\"]');
 
-      document.getElementById('submit-modal').classList.remove('hidden');
+      if (!BACKEND_URL || BACKEND_URL.includes('PASTE_YOUR_')) {
+        alert('The audit is ready, but the data-saving connection has not been configured yet. Please contact the site owner.');
+        return;
+      }
+
+      const payload = {
+        submittedAt: new Date().toISOString(),
+        respondent: { name, title, company, email, phone },
+        organization: { headcount: state.headcount, industry: state.industry },
+        auditInputs: { ...state },
+        calculated: {
+          quadrant: document.getElementById('badge-quadrant')?.innerText || '',
+          burnoutWarning: document.getElementById('badge-burnout')?.innerText || '',
+          vitalityIndex: document.getElementById('kpi-burnout-index')?.innerText || '',
+          welfareIndex: document.getElementById('kpi-welfare-index')?.innerText || '',
+          affectedCount: document.getElementById('kpi-affected-count')?.innerText || '',
+          affectedSub: document.getElementById('kpi-affected-sub')?.innerText || '',
+          overviewTitle: document.getElementById('overview-title')?.innerText || '',
+          overviewDescription: document.getElementById('overview-desc')?.innerText || '',
+          priorityServices: Array.from(document.querySelectorAll('#service-recommendations-container > div')).map(el => el.innerText.trim()).filter(Boolean),
+          roadmap: {
+            phase1: document.getElementById('roadmap-p1')?.innerText || '',
+            phase2: document.getElementById('roadmap-p2')?.innerText || '',
+            phase3: document.getElementById('roadmap-p3')?.innerText || ''
+          }
+        }
+      };
+
+      submitButton.disabled = true;
+      submitButton.style.opacity = '0.6';
+      submitButton.innerHTML = '<span>Saving audit…</span>';
+
+      try {
+        // Google Apps Script accepts this cross-origin request with no-cors.
+        await fetch(BACKEND_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+
+        document.getElementById('modal-lead-name').innerText = name;
+        document.getElementById('modal-lead-company').innerText = company;
+        document.getElementById('modal-email').innerText = email;
+        document.getElementById('modal-headcount').innerText = `${state.headcount} FTEs (${state.industry})`;
+        document.getElementById('submit-modal').classList.remove('hidden');
+      } catch (error) {
+        console.error('Audit submission failed:', error);
+        alert('We could not save your audit. Please check your internet connection and try again.');
+      } finally {
+        submitButton.disabled = false;
+        submitButton.style.opacity = '';
+        submitButton.innerHTML = '<i data-lucide=\"send\" class=\"w-4 h-4 text-slate-900\"></i> Submit Audit & Request Customized Implementation Plan';
+        if (window.lucide) lucide.createIcons();
+      }
     }
 
     function closeModal() {
