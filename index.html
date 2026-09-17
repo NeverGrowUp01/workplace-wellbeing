@@ -73,7 +73,7 @@
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
 
     <!-- LEFT COLUMN: Input Form -->
-    <section class="lg:col-span-6 space-y-6">
+    <section id="input-panel" class="lg:col-span-12 space-y-6">
       
       <!-- SECTION 1: Organization Size & Profile -->
       <div class="bg-white p-5 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-4">
@@ -438,7 +438,7 @@
     </section>
 
     <!-- RIGHT COLUMN: Real-Time Diagnostic Dashboard & Strategy -->
-    <section class="lg:col-span-6 space-y-6">
+    <section id="dashboard-panel" class="lg:col-span-6 space-y-6 hidden">
 
       <!-- Executive Overview Banner -->
       <div class="bg-white p-6 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-4">
@@ -943,6 +943,21 @@
 
         // The browser has handed the POST to Apps Script. We do not try to read
         // the cross-origin response; the backend writes the submission to Sheets.
+        // Reveal the dashboard only after the respondent details have been submitted.
+        const inputPanel = document.getElementById('input-panel');
+        const dashboardPanel = document.getElementById('dashboard-panel');
+
+        inputPanel.classList.remove('lg:col-span-12');
+        inputPanel.classList.add('lg:col-span-6');
+        dashboardPanel.classList.remove('hidden');
+
+        // Recalculate after the panel becomes visible so the charts size correctly.
+        requestAnimationFrame(() => {
+          calculateAll();
+          matrixChart?.resize();
+          radarChart?.resize();
+        });
+
         document.getElementById('modal-lead-name').innerText = name;
         document.getElementById('modal-lead-company').innerText = company;
         document.getElementById('modal-email').innerText = email;
