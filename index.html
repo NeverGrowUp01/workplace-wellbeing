@@ -412,7 +412,7 @@
             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
               <i data-lucide="user-check" class="w-4 h-4 text-nguPink"></i> 3. Respondent & Contact Information
             </h2>
-            <p class="text-[11px] text-slate-500 mt-0.5">Enter details to generate and save your official audit report.</p>
+            <p class="text-[11px] text-slate-600 mt-0.5">Add your details below to unlock your personalized analysis report and generate your audit summary.</p>
           </div>
           <span class="text-[11px] bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full border border-nguYellow">Step 3 of 3</span>
         </div>
@@ -440,7 +440,8 @@
             </div>
             <div>
               <label class="block font-semibold text-slate-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
-              <input type="tel" id="lead-phone" required placeholder="+1 (555) 000-0000" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-nguYellow">
+              <input type="tel" id="lead-phone" required inputmode="numeric" autocomplete="tel" minlength="10" maxlength="10" pattern="[0-9]{10}" placeholder="e.g. 9876543210" title="Enter a valid 10-digit phone number" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10)" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-nguYellow">
+              <p class="text-[10px] text-slate-400 mt-1">Enter a 10-digit phone number.</p>
             </div>
           </div>
 
@@ -898,7 +899,15 @@
       const company = document.getElementById('lead-company').value.trim();
       const email = document.getElementById('lead-email').value.trim();
       const phone = document.getElementById('lead-phone').value.trim();
+      const phoneInput = document.getElementById('lead-phone');
       const submitButton = document.querySelector('#contact-form button[type="submit"]');
+
+      if (!/^\d{10}$/.test(phone)) {
+        phoneInput.setCustomValidity('Please enter a valid 10-digit phone number.');
+        phoneInput.reportValidity();
+        return;
+      }
+      phoneInput.setCustomValidity('');
 
       if (!BACKEND_URL || BACKEND_URL.includes('PASTE_YOUR_')) {
         alert('The audit is ready, but the data-saving connection has not been configured yet. Please contact the site owner.');
@@ -964,11 +973,19 @@
         // The input page is hidden entirely; the analysis occupies the full content area.
         const inputPanel = document.getElementById('input-panel');
         const dashboardPanel = document.getElementById('dashboard-panel');
+        const mainContent = document.querySelector('main');
 
         inputPanel.classList.add('hidden');
         dashboardPanel.classList.remove('hidden');
         dashboardPanel.classList.remove('lg:col-span-6');
         dashboardPanel.classList.add('lg:col-span-12');
+
+        // Switch from the input-page grid to a full-width analysis page.
+        mainContent.classList.remove('grid', 'grid-cols-1', 'lg:grid-cols-12', 'gap-8');
+        mainContent.classList.add('block');
+
+        // Take the user directly to the top of the analysis page.
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Recalculate after the analysis page becomes visible so the charts size correctly.
         requestAnimationFrame(() => {
