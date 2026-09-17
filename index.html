@@ -1,1176 +1,2354 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Workplace Wellbeing Audit Calculator</title>
-  <!-- Google Fonts: Poppins -->
+can we add this logo beside the Workplace Wellbeing Audit Calculator instead of the arrow thing<!DOCTYPE html> 
+
+<html lang="en"> 
+
+<head> 
+
+  <meta charset="UTF-8"> 
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+
+  <title>Workplace Wellbeing Audit Calculator</title> 
+
+  <!-- Google Fonts: Poppins --> 
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
+
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
   
+
   <!-- Tailwind CSS -->
+
   <script src="https://cdn.tailwindcss.com"></script>
+
   <script>
+
     tailwind.config = {
+
       theme: {
+
         extend: {
+
           fontFamily: {
+
             sans: ['Poppins', 'sans-serif'],
+
           },
+
           colors: {
+
             nguYellowLight: '#FADF6A',
+
             nguYellow: '#F4B842',
+
             nguOrange: '#EE8341',
+
             nguPink: '#ED8ABE',
+
             nguBlueSky: '#92CFFB',
+
             nguBlue: '#4CA2F8',
+
             nguGreen: '#4CA05C',
+
             // RAG Dedicated Colors
+
             ragGreen: '#4CA05C',
+
             ragAmber: '#F4B842',
+
             ragRed: '#DC2626'
+
           }
+
         }
+
       }
+
     }
+
   </script>
+
   <!-- Chart.js -->
+
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
   <!-- Lucide Icons -->
+
   <script src="https://unpkg.com/lucide@latest"></script>
+
   <style>
+
     body { font-family: 'Poppins', sans-serif; }
+
     
+
     /* Custom Scrollbar */
+
     ::-webkit-scrollbar { width: 6px; height: 6px; }
+
     ::-webkit-scrollbar-track { background: #fef9c3; }
+
     ::-webkit-scrollbar-thumb { background: #F4B842; border-radius: 4px; }
+
     ::-webkit-scrollbar-thumb:hover { background: #EE8341; }
+
   </style>
+
 </head>
+
 <body class="bg-amber-50/40 text-slate-800 min-h-screen flex flex-col antialiased">
 
+
+
   <!-- Header -->
+
   <header class="bg-slate-900 border-b-4 border-nguYellow text-white sticky top-0 z-50 shadow-md">
+
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3.5 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+
       <div class="flex items-center space-x-3">
-        <div class="p-2 bg-nguYellow text-slate-900 rounded-xl font-black flex items-center justify-center shadow">
-          <i data-lucide="activity" class="w-6 h-6 text-slate-900"></i>
+
+        <!-- Never Grow Up logo -->
+        <div class="w-12 h-10 flex items-center justify-center flex-shrink-0">
+          <img
+            src="data:image/png;base64,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"
+            alt="Never Grow Up logo"
+            class="max-w-full max-h-full object-contain"
+          >
         </div>
+
         <div>
+
           <div class="flex items-center gap-2">
+
             <h1 class="text-lg font-extrabold tracking-tight text-white">Workplace Wellbeing Audit Calculator</h1>
+
             <span class="text-[10px] font-bold bg-nguPink/30 text-nguPink border border-nguPink/40 px-2 py-0.5 rounded-full uppercase tracking-wider">NGU Edition</span>
+
           </div>
+
           <p class="text-xs text-amber-200/80">Targeted Diagnostic & Service Deployment Planner</p>
+
         </div>
+
       </div>
+
     </div>
+
   </header>
 
+
+
   <!-- Main Content Container -->
+
   <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
 
+
+
     <!-- LEFT COLUMN: Input Form -->
+
     <section id="input-panel" class="lg:col-span-12 space-y-6">
+
       
+
       <!-- SECTION 1: Organization Size & Profile -->
+
       <div class="bg-white p-5 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-4">
+
         <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+
           <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+
             <i data-lucide="building" class="w-4 h-4 text-nguOrange"></i> 1. Organization Demographics
+
           </h2>
+
           <span class="text-[11px] bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full border border-nguYellow">Step 1 of 3</span>
+
         </div>
+
+
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+
           <div>
+
             <label class="block font-semibold text-slate-700 mb-1">Company Headcount (Total Employees)</label>
+
             <div class="relative">
+
               <input type="number" id="org-headcount" min="10" max="50000" value="250" oninput="updateOrgDetails()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl font-mono font-bold text-nguOrange focus:outline-none focus:ring-2 focus:ring-nguYellow">
+
               <span class="absolute right-3 top-2.5 text-slate-400 font-medium text-[11px]">FTEs</span>
+
             </div>
+
           </div>
+
           <div>
+
             <label class="block font-semibold text-slate-700 mb-1">Industry Sector</label>
+
             <select id="org-industry" onchange="updateOrgDetails()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl text-slate-700 focus:outline-none focus:ring-2 focus:ring-nguYellow">
+
               <option value="Agriculture">Agriculture (Dairy, Farming, Fishery, etc)</option>
+
               <option value="Arts">Arts (Performing Arts, Photography, Graphic Designing, etc)</option>
+
               <option value="Construction">Construction (Civil Engineering, Materials, etc)</option>
+
               <option value="Consumer Goods">Consumer Goods (Apparel & Fashion, FMCG, etc)</option>
+
               <option value="Corporate Services">Corporate Services (HR Services, Business Supplies, Management Consulting, etc)</option>
+
               <option value="Design">Design (Architecture & Planning, Graphic Designing, Fashion Designing, etc)</option>
+
               <option value="Education">Education (E-learning, Teaching, Research, etc)</option>
+
               <option value="Energy & Mining">Energy & Mining (Metals, Oil & Petrol, Utilities, etc)</option>
+
               <option value="Entertainment">Entertainment (Animation, Media Production, Music, etc)</option>
+
               <option value="Finance">Finance (Banking, Insurance, Investments, Venture Capitals, etc)</option>
+
               <option value="Hardware & Networking">Hardware & Networking (Telecommunications, Nanotech, Computer Hardware, etc)</option>
+
               <option value="Health Care">Health Care (Medical Practice, Mental Health Care, Pharmaceuticals, etc)</option>
+
               <option value="Legal">Legal (Law Practice, Legal Services, Alternate Dispute Resolution, etc)</option>
+
               <option value="Manufacturing">Manufacturing (Automotive, Textiles, Food Products, Plastics, etc)</option>
+
               <option value="Media & Communications">Media & Communications (Marketing & Advertising, Market Research, PR, etc)</option>
+
               <option value="Nonprofit">Nonprofit (Fundraising, NGOs, Religious Insitutions, Think tanks, etc)</option>
+
               <option value="Public Administration">Public Administration (Government Administration & Relations, Public Policy, etc)</option>
+
               <option value="Public Safety">Public Safety (Law Enforcement, Military, Private Security, etc)</option>
+
               <option value="Real Estate">Real Estate</option>
+
               <option value="Recreation & Travel">Recreation & Travel (Hospitality, Airlines/Aviation, Sports, etc)</option>
+
               <option value="Retail">Retail (Supermarkets, Wholesale, etc)</option>
+
               <option value="Software & IT Services" selected>Software & IT Services (Computer Software, Cyber Sercurity, etc)</option>
+
               <option value="Transportation & Logistics">Transportation & Logistics (Import & Export, Delivery Services, etc)</option>
+
               <option value="Wellness & Fitness">Wellness & Fitness (Supplements, Wellness Accessories, etc)</option>
+
             </select>
+
           </div>
+
         </div>
+
       </div>
+
+
 
       <!-- SECTION 2: Audit Survey Categories -->
+
       <div class="bg-white p-5 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-5">
+
         <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+
           <div>
+
             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+
               <i data-lucide="clipboard-check" class="w-4 h-4 text-nguBlue"></i> 2. Wellbeing & Vitality Diagnostic Assessment
+
             </h2>
+
             <p class="text-[11px] text-slate-500 mt-0.5">8-category unified audit with real-time Red, Amber, Green scoring.</p>
+
           </div>
+
           <span class="text-[11px] bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full border border-nguYellow">Step 2 of 3</span>
+
         </div>
+
+
 
         <!-- All 8 Categories displayed in a single unified view -->
+
         <div class="space-y-6">
 
+
+
           <!-- PART A: PERSONAL VITALITY & ENGAGEMENT -->
+
           <div class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-nguYellowLight pb-1.5">
+
             <span class="p-1 bg-nguYellowLight rounded text-slate-900"><i data-lucide="zap" class="w-3.5 h-3.5 text-nguOrange"></i></span>
+
             Part A: Personal Vitality & Mental Resilience
+
           </div>
+
+
 
           <!-- 1. ENERGY & VITALITY -->
+
           <div class="bg-amber-50/50 p-4 rounded-xl border border-amber-200/60 space-y-3">
+
             <div class="flex items-center justify-between">
+
               <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+
                 <span class="w-5 h-5 rounded-full bg-nguGreen text-white font-extrabold flex items-center justify-center text-[10px]">1</span>
+
                 Energy & Physical Vitality
+
               </span>
+
               <span class="text-[11px] font-bold px-2 py-0.5 rounded border" id="badge-cat-exhaustion">Good Energy</span>
+
             </div>
+
+
 
             <!-- Q1 % -->
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">What % of employees regularly feel energized, capable, and physically vibrant?</label>
+
                 <span class="font-bold font-mono text-nguGreen" id="val-exh-pct">65%</span>
+
               </div>
+
               <input type="range" min="0" max="100" step="1" value="65" id="in-exh-pct" oninput="updateValue('exh-pct', this.value)" class="w-full accent-nguGreen bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
             </div>
+
+
 
             <!-- Q2 Likert -->
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">Rate overall energy recovery & daily stamina across the workforce:</label>
+
                 <span class="font-bold font-mono text-nguGreen" id="val-exh-scale">3.5 / 5</span>
+
               </div>
+
               <input type="range" min="1" max="5" step="0.1" value="3.5" id="in-exh-scale" oninput="updateValue('exh-scale', this.value)" class="w-full accent-nguGreen bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
               <div class="flex justify-between text-[10px] text-slate-400">
+
                 <span>1 (Severe Fatigue)</span>
+
                 <span>5 (High Vitality & Stamina)</span>
+
               </div>
+
             </div>
+
           </div>
+
+
 
           <!-- 2. MENTAL ENGAGEMENT -->
+
           <div class="bg-blue-50/40 p-4 rounded-xl border border-blue-200/60 space-y-3">
+
             <div class="flex items-center justify-between">
+
               <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+
                 <span class="w-5 h-5 rounded-full bg-nguBlue text-white font-extrabold flex items-center justify-center text-[10px]">2</span>
+
                 Mental Engagement & Connection
+
               </span>
+
               <span class="text-[11px] font-bold px-2 py-0.5 rounded border" id="badge-cat-distance">Strong</span>
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">What % express strong enthusiasm and alignment with their work?</label>
+
                 <span class="font-bold font-mono text-nguBlue" id="val-dis-pct">72%</span>
+
               </div>
+
               <input type="range" min="0" max="100" step="1" value="72" id="in-dis-pct" oninput="updateValue('dis-pct', this.value)" class="w-full accent-nguBlue bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">Rate active psychological connection and dedication:</label>
+
                 <span class="font-bold font-mono text-nguBlue" id="val-dis-scale">3.5 / 5</span>
+
               </div>
+
               <input type="range" min="1" max="5" step="0.1" value="3.5" id="in-dis-scale" oninput="updateValue('dis-scale', this.value)" class="w-full accent-nguBlue bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
               <div class="flex justify-between text-[10px] text-slate-400">
+
                 <span>1 (Cynical / Withdrawn)</span>
+
                 <span>5 (Deeply Engaged)</span>
+
               </div>
+
             </div>
+
           </div>
+
+
 
           <!-- 3. EMOTIONAL RESILIENCE -->
+
           <div class="bg-pink-50/40 p-4 rounded-xl border border-pink-200/60 space-y-3">
+
             <div class="flex items-center justify-between">
+
               <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+
                 <span class="w-5 h-5 rounded-full bg-nguPink text-white font-extrabold flex items-center justify-center text-[10px]">3</span>
+
                 Emotional Resilience & Balance
+
               </span>
+
               <span class="text-[11px] font-bold px-2 py-0.5 rounded border" id="badge-cat-emo">Resilient</span>
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">What % demonstrate steady emotional composure under pressure?</label>
+
                 <span class="font-bold font-mono text-pink-600" id="val-emo-pct">78%</span>
+
               </div>
+
               <input type="range" min="0" max="100" step="1" value="78" id="in-emo-pct" oninput="updateValue('emo-pct', this.value)" class="w-full accent-pink-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">Rate emotional stability and constructive conflict handling:</label>
+
                 <span class="font-bold font-mono text-pink-600" id="val-emo-scale">3.8 / 5</span>
+
               </div>
+
               <input type="range" min="1" max="5" step="0.1" value="3.8" id="in-emo-scale" oninput="updateValue('emo-scale', this.value)" class="w-full accent-pink-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
               <div class="flex justify-between text-[10px] text-slate-400">
+
                 <span>1 (High Irritability)</span>
+
                 <span>5 (High Emotional Calm)</span>
+
               </div>
+
             </div>
+
           </div>
+
+
 
           <!-- 4. COGNITIVE FOCUS -->
+
           <div class="bg-sky-50/50 p-4 rounded-xl border border-sky-200/60 space-y-3">
+
             <div class="flex items-center justify-between">
+
               <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+
                 <span class="w-5 h-5 rounded-full bg-nguBlueSky text-slate-900 font-extrabold flex items-center justify-center text-[10px]">4</span>
+
                 Cognitive Focus & Clarity
+
               </span>
+
               <span class="text-[11px] font-bold px-2 py-0.5 rounded border" id="badge-cat-cog">Sharp</span>
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">What % report sustained mental focus and low error rates?</label>
+
                 <span class="font-bold font-mono text-sky-700" id="val-cog-pct">75%</span>
+
               </div>
+
               <input type="range" min="0" max="100" step="1" value="75" id="in-cog-pct" oninput="updateValue('cog-pct', this.value)" class="w-full accent-sky-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">Rate mental clarity, attention span, and decision-making quality:</label>
+
                 <span class="font-bold font-mono text-sky-700" id="val-cog-scale">3.6 / 5</span>
+
               </div>
+
               <input type="range" min="1" max="5" step="0.1" value="3.6" id="in-cog-scale" oninput="updateValue('cog-scale', this.value)" class="w-full accent-sky-500 bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
               <div class="flex justify-between text-[10px] text-slate-400">
+
                 <span>1 (Frequent Brain Fog)</span>
+
                 <span>5 (High Focus & Accuracy)</span>
+
               </div>
+
             </div>
+
           </div>
+
+
 
           <!-- PART B: ORGANIZATIONAL WELFARE DRIVERS -->
+
           <div class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2 border-b border-nguYellowLight pb-1.5 pt-2">
+
             <span class="p-1 bg-nguYellowLight rounded text-slate-900"><i data-lucide="shield-check" class="w-3.5 h-3.5 text-nguGreen"></i></span>
+
             Part B: Organizational Welfare & Support Drivers
+
           </div>
+
+
 
           <!-- 5. ORGANIZATIONAL HEALTH POLICY -->
+
           <div class="bg-emerald-50/40 p-4 rounded-xl border border-emerald-200/60 space-y-3">
+
             <div class="flex items-center justify-between">
+
               <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+
                 <span class="w-5 h-5 rounded-full bg-nguGreen text-white font-extrabold flex items-center justify-center text-[10px]">5</span>
+
                 Organizational Health Policy
+
               </span>
+
               <span class="text-[11px] font-bold px-2 py-0.5 rounded border" id="badge-cat-pol">Moderate</span>
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">What % know where to access mental wellbeing support?</label>
+
                 <span class="font-bold font-mono text-nguGreen" id="val-pol-pct">60%</span>
+
               </div>
+
               <input type="range" min="0" max="100" step="1" value="60" id="in-pol-pct" oninput="updateValue('pol-pct', this.value)" class="w-full accent-nguGreen bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">Average confidence approaching manager about mental health:</label>
+
                 <span class="font-bold font-mono text-nguGreen" id="val-pol-scale">3.2 / 5</span>
+
               </div>
+
               <input type="range" min="1" max="5" step="0.1" value="3.2" id="in-pol-scale" oninput="updateValue('pol-scale', this.value)" class="w-full accent-nguGreen bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
               <div class="flex justify-between text-[10px] text-slate-400">
+
                 <span>1 (Not confident)</span>
+
                 <span>5 (Very confident)</span>
+
               </div>
+
             </div>
+
           </div>
+
+
 
           <!-- 6. WORK DEMANDS -->
+
           <div class="bg-orange-50/40 p-4 rounded-xl border border-orange-200/60 space-y-3">
+
             <div class="flex items-center justify-between">
+
               <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+
                 <span class="w-5 h-5 rounded-full bg-nguOrange text-white font-extrabold flex items-center justify-center text-[10px]">6</span>
+
                 Workload Manageability & Demands
+
               </span>
+
               <span class="text-[11px] font-bold px-2 py-0.5 rounded border" id="badge-cat-dem">Moderate</span>
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">What % of employees have a realistic, manageable workload?</label>
+
                 <span class="font-bold font-mono text-nguOrange" id="val-dem-pct">55%</span>
+
               </div>
+
               <input type="range" min="0" max="100" step="1" value="55" id="in-dem-pct" oninput="updateValue('dem-pct', this.value)" class="w-full accent-nguOrange bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">Pacing and realistic timeline management across projects:</label>
+
                 <span class="font-bold font-mono text-nguOrange" id="val-dem-scale">2.8 / 5</span>
+
               </div>
+
               <input type="range" min="1" max="5" step="0.1" value="2.8" id="in-dem-scale" oninput="updateValue('dem-scale', this.value)" class="w-full accent-nguOrange bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
               <div class="flex justify-between text-[10px] text-slate-400">
+
                 <span>1 (Constant Crises)</span>
+
                 <span>5 (Well-Paced)</span>
+
               </div>
+
             </div>
+
           </div>
+
+
 
           <!-- 7. WORKING TIME QUALITY -->
+
           <div class="bg-amber-50/40 p-4 rounded-xl border border-amber-200/60 space-y-3">
+
             <div class="flex items-center justify-between">
+
               <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+
                 <span class="w-5 h-5 rounded-full bg-nguYellow text-slate-900 font-extrabold flex items-center justify-center text-[10px]">7</span>
+
                 Working Time Quality & Disconnection
+
               </span>
+
               <span class="text-[11px] font-bold px-2 py-0.5 rounded border" id="badge-cat-wtq">Moderate</span>
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">What % are able to fully disconnect from work outside office hours?</label>
+
                 <span class="font-bold font-mono text-amber-700" id="val-wtq-pct">58%</span>
+
               </div>
+
               <input type="range" min="0" max="100" step="1" value="58" id="in-wtq-pct" oninput="updateValue('wtq-pct', this.value)" class="w-full accent-nguYellow bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">Satisfaction with work-life boundary quality:</label>
+
                 <span class="font-bold font-mono text-amber-700" id="val-wtq-scale">3.1 / 5</span>
+
               </div>
+
               <input type="range" min="1" max="5" step="0.1" value="3.1" id="in-wtq-scale" oninput="updateValue('wtq-scale', this.value)" class="w-full accent-nguYellow bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
               <div class="flex justify-between text-[10px] text-slate-400">
+
                 <span>1 (Very Dissatisfied)</span>
+
                 <span>5 (Very Satisfied)</span>
+
               </div>
+
             </div>
+
           </div>
+
+
 
           <!-- 8. FINANCIAL WELLBEING -->
+
           <div class="bg-yellow-50/60 p-4 rounded-xl border border-yellow-200/80 space-y-3">
+
             <div class="flex items-center justify-between">
+
               <span class="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+
                 <span class="w-5 h-5 rounded-full bg-nguYellowLight text-slate-900 font-extrabold flex items-center justify-center text-[10px]">8</span>
+
                 Financial Wellbeing
+
               </span>
+
               <span class="text-[11px] font-bold px-2 py-0.5 rounded border" id="badge-cat-fin">Moderate</span>
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">What % feel paid fairly for their effort and contribution?</label>
+
                 <span class="font-bold font-mono text-amber-800" id="val-fin-pct">58%</span>
+
               </div>
+
               <input type="range" min="0" max="100" step="1" value="58" id="in-fin-pct" oninput="updateValue('fin-pct', this.value)" class="w-full accent-nguYellow bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
             </div>
 
+
+
             <div class="space-y-1">
+
               <div class="flex justify-between text-xs">
+
                 <label class="text-slate-700 font-medium">Financial resilience (ability to cover unexpected expenses):</label>
+
                 <span class="font-bold font-mono text-amber-800" id="val-fin-scale">2.9 / 5</span>
+
               </div>
+
               <input type="range" min="1" max="5" step="0.1" value="2.9" id="in-fin-scale" oninput="updateValue('fin-scale', this.value)" class="w-full accent-nguYellow bg-slate-200 h-1.5 rounded-lg cursor-pointer">
+
               <div class="flex justify-between text-[10px] text-slate-400">
+
                 <span>1 (Very Low)</span>
+
                 <span>5 (Very High)</span>
+
               </div>
+
             </div>
+
           </div>
+
+
 
         </div>
 
+
+
       </div>
+
+
 
       <!-- SECTION 3: Lead & Contact Information -->
+
       <div class="bg-white p-5 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-4">
+
         <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+
           <div>
+
             <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+
               <i data-lucide="user-check" class="w-4 h-4 text-nguPink"></i> 3. Respondent & Contact Information
+
             </h2>
+
             <p class="text-[11px] text-slate-600 mt-0.5">Add your details below to unlock your personalized analysis report and generate your audit summary.</p>
+
           </div>
+
           <span class="text-[11px] bg-amber-100 text-amber-900 font-bold px-2.5 py-0.5 rounded-full border border-nguYellow">Step 3 of 3</span>
+
         </div>
+
+
 
         <form id="contact-form" onsubmit="handleFormSubmit(event)" class="space-y-3 text-xs">
+
           <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+
             <div>
+
               <label class="block font-semibold text-slate-700 mb-1">Full Name <span class="text-red-500">*</span></label>
+
               <input type="text" id="lead-name" required placeholder="e.g. Sarah Jenkins" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-nguYellow">
+
             </div>
+
             <div>
+
               <label class="block font-semibold text-slate-700 mb-1">Designation / Role <span class="text-red-500">*</span></label>
+
               <input type="text" id="lead-title" required placeholder="e.g. Head of HR / People Director" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-nguYellow">
+
             </div>
+
           </div>
+
+
 
           <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+
             <div>
+
               <label class="block font-semibold text-slate-700 mb-1">Company Name <span class="text-red-500">*</span></label>
+
               <input type="text" id="lead-company" required placeholder="e.g. Acme Corp" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-nguYellow">
+
             </div>
+
             <div>
+
               <label class="block font-semibold text-slate-700 mb-1">Email ID <span class="text-red-500">*</span></label>
+
               <input type="email" id="lead-email" required placeholder="sarah@company.com" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-nguYellow">
+
             </div>
+
             <div>
+
               <label class="block font-semibold text-slate-700 mb-1">Phone Number <span class="text-red-500">*</span></label>
+
               <input type="tel" id="lead-phone" required inputmode="numeric" autocomplete="tel" minlength="10" maxlength="10" pattern="[0-9]{10}" placeholder="e.g. 9876543210" title="Enter a valid 10-digit phone number" oninput="this.value = this.value.replace(/\D/g, '').slice(0, 10)" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-nguYellow">
+
               <p class="text-[10px] text-slate-400 mt-1">Enter a 10-digit phone number.</p>
+
             </div>
+
           </div>
+
+
 
           <div class="pt-2">
+
             <button type="submit" class="w-full py-3 bg-nguYellow hover:bg-amber-400 text-slate-900 font-extrabold rounded-xl shadow transition flex items-center justify-center gap-2 text-xs">
+
               <i data-lucide="send" class="w-4 h-4 text-slate-900"></i> Submit Audit & Request Customized Implementation Plan
+
             </button>
+
           </div>
+
         </form>
+
       </div>
 
+
+
     </section>
+
+
 
     <!-- RIGHT COLUMN: Real-Time Diagnostic Dashboard & Strategy -->
+
     <section id="dashboard-panel" class="lg:col-span-6 space-y-6 hidden">
 
+
+
       <!-- Executive Overview Banner -->
+
       <div class="bg-white p-6 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-4">
+
         <div class="flex items-center justify-between">
+
           <div class="flex items-center gap-2">
+
             <span id="badge-quadrant" class="px-3 py-1 text-xs font-bold rounded-full bg-amber-100 text-amber-900 border border-nguYellow">
+
               Quadrant III: Support Misalignment
+
             </span>
+
             <span id="badge-burnout" class="px-3 py-1 text-xs font-bold rounded-full bg-red-100 text-ragRed border border-red-300 hidden">
+
               ⚠️ High Strain / Burnout Warning
+
             </span>
+
           </div>
+
         </div>
+
+
 
         <h2 class="text-base font-extrabold text-slate-900" id="overview-title">Diagnostic Summary</h2>
+
         <p class="text-xs text-slate-600 leading-relaxed" id="overview-desc">
+
           Calculated based on workforce metrics across 250 employees.
+
         </p>
 
+
+
         <!-- RAG Legend Indicator Bar -->
+
         <div class="flex items-center gap-4 pt-1 pb-1 text-[11px] font-semibold border-t border-b border-amber-100">
+
           <span class="text-slate-500">RAG Thresholds:</span>
+
           <span class="flex items-center gap-1 text-nguGreen"><span class="w-2.5 h-2.5 rounded-full bg-nguGreen inline-block"></span> ≥3.8 Optimal</span>
+
           <span class="flex items-center gap-1 text-amber-600"><span class="w-2.5 h-2.5 rounded-full bg-nguYellow inline-block"></span> 2.8–3.7 Moderate</span>
+
           <span class="flex items-center gap-1 text-ragRed"><span class="w-2.5 h-2.5 rounded-full bg-ragRed inline-block"></span> &lt;2.8 At Risk</span>
+
         </div>
+
+
 
         <!-- KPI Key Highlights Grid -->
+
         <div class="grid grid-cols-3 gap-3 pt-1">
+
           <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200/80">
+
             <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Vitality & Energy</span>
+
             <div class="text-xl font-black text-nguGreen font-mono mt-0.5" id="kpi-burnout-index">3.5 / 5</div>
+
             <span class="text-[10px] text-slate-500 block mt-0.5" id="kpi-burnout-sub">Workforce Vitality</span>
+
           </div>
 
+
+
           <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200/80">
+
             <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Welfare Drivers</span>
+
             <div class="text-xl font-black text-nguBlue font-mono mt-0.5" id="kpi-welfare-index">2.9 / 5</div>
+
             <span class="text-[10px] text-slate-500 block mt-0.5" id="kpi-welfare-sub">Policy Gaps</span>
+
           </div>
 
+
+
           <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200/80">
+
             <span class="text-[10px] text-slate-500 uppercase font-bold tracking-wider block">Fatigued Headcount</span>
+
             <div class="text-xl font-black text-slate-900 font-mono mt-0.5" id="kpi-affected-count">88 FTEs</div>
+
             <span class="text-[10px] text-slate-500 block mt-0.5" id="kpi-affected-sub">Est. ~35% low energy</span>
+
           </div>
+
         </div>
+
       </div>
+
+
 
       <!-- Charts Row: Matrix & Radar -->
+
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
         
+
         <!-- Chart 1: Scatter Matrix -->
+
         <div class="bg-white p-5 rounded-2xl border-2 border-nguYellowLight shadow-sm flex flex-col">
+
           <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+
             <i data-lucide="grid" class="w-4 h-4 text-nguBlue"></i> Audit Alignment Matrix
+
           </h3>
+
           <div class="relative" style="height:220px;">
+
             <canvas id="matrixChart"></canvas>
+
           </div>
+
         </div>
+
+
 
         <!-- Chart 2: 8-Category Radar -->
+
         <div class="bg-white p-5 rounded-2xl border-2 border-nguYellowLight shadow-sm flex flex-col">
+
           <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+
             <i data-lucide="radar" class="w-4 h-4 text-nguGreen"></i> 8-Category Profile
+
           </h3>
+
           <div class="relative" style="height:220px;">
+
             <canvas id="radarChart"></canvas>
+
           </div>
+
         </div>
 
+
+
       </div>
+
+
 
       <!-- SERVICE RECOMMENDATION PLAN -->
+
       <div class="bg-white p-6 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-4">
+
         <div class="flex items-center justify-between border-b border-amber-100 pb-3">
+
           <div>
+
             <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+
               <i data-lucide="briefcase" class="w-4 h-4 text-nguOrange"></i> Priority Service Interventions
+
             </h3>
+
             <p class="text-[11px] text-slate-500">Targeted programs triggered by low audit scores and high strain indicators.</p>
+
           </div>
+
           <span class="text-xs font-bold text-slate-900 bg-nguYellowLight px-3 py-1 rounded-full border border-nguYellow" id="total-services-count">
+
             3 Priority Services
+
           </span>
+
         </div>
+
+
 
         <div id="service-recommendations-container" class="space-y-3">
+
           <!-- Dynamically Injected -->
+
         </div>
+
       </div>
+
+
 
       <!-- Roadmap -->
+
       <div class="bg-white p-5 rounded-2xl border-2 border-nguYellowLight shadow-sm space-y-3">
+
         <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider flex items-center gap-2">
+
           <i data-lucide="calendar" class="w-4 h-4 text-nguPink"></i> Phased Service Deployment Roadmap
+
         </h3>
 
+
+
         <div class="grid grid-cols-1 md:grid-cols-3 gap-3 text-xs">
+
           <div class="bg-red-50/60 p-3 rounded-xl border border-red-200 space-y-1.5">
+
             <span class="font-bold text-ragRed block text-[11px]">Phase 1: Immediate (0–30 Days)</span>
+
             <ul class="text-slate-600 space-y-1 list-disc list-inside text-[11px]" id="roadmap-p1">
+
               <li>EAP & Clinical Triage</li>
+
             </ul>
+
           </div>
+
           <div class="bg-amber-50/60 p-3 rounded-xl border border-amber-200 space-y-1.5">
+
             <span class="font-bold text-amber-800 block text-[11px]">Phase 2: Core (1–3 Months)</span>
+
             <ul class="text-slate-600 space-y-1 list-disc list-inside text-[11px]" id="roadmap-p2">
+
               <li>Workload Audits</li>
+
             </ul>
+
           </div>
+
           <div class="bg-emerald-50/60 p-3 rounded-xl border border-emerald-200 space-y-1.5">
+
             <span class="font-bold text-nguGreen block text-[11px]">Phase 3: Culture (3–6 Months)</span>
+
             <ul class="text-slate-600 space-y-1 list-disc list-inside text-[11px]" id="roadmap-p3">
+
               <li>Policy & Leadership</li>
+
             </ul>
+
           </div>
+
         </div>
+
       </div>
 
+
+
     </section>
+
+
 
   </main>
 
+
+
   <!-- Submission Confirmation Modal -->
+
   <div id="submit-modal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+
     <div class="bg-white max-w-md w-full p-6 rounded-2xl shadow-2xl space-y-4 border-2 border-nguYellow">
+
       <div class="w-12 h-12 bg-emerald-100 text-nguGreen rounded-full flex items-center justify-center mx-auto">
+
         <i data-lucide="check-circle-2" class="w-7 h-7"></i>
+
       </div>
+
       <div class="text-center space-y-1">
+
         <h3 class="text-lg font-bold text-slate-900">Audit Request Submitted</h3>
+
         <p class="text-xs text-slate-600">
+
           Thank you, <span id="modal-lead-name" class="font-bold"></span>! Your organizational audit for <span id="modal-lead-company" class="font-bold"></span> has been compiled successfully.
+
         </p>
+
       </div>
+
       <div class="bg-amber-50/80 p-3.5 rounded-xl border border-amber-200 text-xs space-y-1.5 text-slate-700">
+
         <div class="flex justify-between">
+
           <span class="text-slate-500">Target Headcount:</span>
+
           <span id="modal-headcount" class="font-mono font-bold">250 FTEs</span>
+
         </div>
+
         <div class="flex justify-between">
+
           <span class="text-slate-500">Report Sent To:</span>
+
           <span id="modal-email" class="font-mono font-bold"></span>
+
         </div>
+
       </div>
+
       <button onclick="closeModal()" class="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition">
+
         Close & View Interactive Summary
+
       </button>
+
     </div>
+
   </div>
 
+
+
   <!-- Footer -->
+
   <footer class="bg-white border-t border-amber-100 py-4 mt-auto">
+
     <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500">
+
       Workplace Wellbeing Audit Calculator • Never Grow Up Design Guidelines & Diagnostic Framework
+
     </div>
+
   </footer>
 
+
+
   <!-- SCRIPT LOGIC -->
+
   <script>
+
     // Audit State Store
+
     const state = {
+
       headcount: 250,
+
       industry: "Software & IT Services",
 
+
+
       // Part A: Vitality & Resilience
+
       exh_pct: 65, exh_scale: 3.5,
+
       dis_pct: 72, dis_scale: 3.5,
+
       emo_pct: 78, emo_scale: 3.8,
+
       cog_pct: 75, cog_scale: 3.6,
 
+
+
       // Part B: Welfare & Policy Drivers
+
       pol_pct: 60, pol_scale: 3.2,
+
       dem_pct: 55, dem_scale: 2.8,
+
       wtq_pct: 58, wtq_scale: 3.1,
+
       fin_pct: 58, fin_scale: 2.9
+
     };
 
+
+
     // Services Catalog
+
     const serviceDatabase = [
+
       {
+
         id: 'serv_eap',
+
         title: 'Crisis Counseling & EAP Fast-Track',
+
         category: 'Vitality & Recovery',
+
         trigger: (s, vitScore) => vitScore < 2.8 || s.exh_pct < 50,
+
         description: 'Instant 24/7 psychological support, burnout recovery therapy, and clinical stamina restoration.',
+
         urgency: 'p1', icon: 'heart-pulse', color: 'red'
+
       },
+
       {
+
         id: 'serv_manager_mh',
+
         title: 'Manager Mental Health First Aid',
+
         category: 'Health Policy',
+
         trigger: (s) => s.pol_scale < 3.2 || s.pol_pct < 50,
+
         description: 'Equip line managers to recognize energy drops, foster emotional safety, and lead supportive 1-on-1s.',
+
         urgency: 'p1', icon: 'shield-alert', color: 'amber'
+
       },
+
       {
+
         id: 'serv_workload',
+
         title: 'Workload Restructuring & Capacity Audit',
+
         category: 'Work Demands',
+
         trigger: (s) => s.dem_scale < 3.0 || s.dem_pct < 50,
+
         description: 'Re-evaluate meeting cadences, tight deadlines, and introduce meeting-free deep work focus blocks.',
+
         urgency: 'p1', icon: 'clock', color: 'orange'
+
       },
+
       {
+
         id: 'serv_disconnect',
+
         title: 'Right-to-Disconnect Charter & Boundary Coaching',
+
         category: 'Working Time',
+
         trigger: (s) => s.wtq_pct < 50 || s.wtq_scale < 3.2,
+
         description: 'Formalize clear rules against after-hours communications and cultivate healthy rest habits.',
+
         urgency: 'p2', icon: 'sliders', color: 'blue'
+
       },
+
       {
+
         id: 'serv_cognitive',
+
         title: 'Focus & Cognitive Resilience Workshops',
+
         category: 'Cognitive Health',
+
         trigger: (s) => s.cog_scale < 3.2 || s.cog_pct < 60,
+
         description: 'Train teams on attention management, reducing context switching, and boosting mental sharpness.',
+
         urgency: 'p2', icon: 'brain', color: 'sky'
+
       },
+
       {
+
         id: 'serv_financial',
+
         title: 'Financial Wellness & Emergency Hardship Assistance',
+
         category: 'Financial Wellbeing',
+
         trigger: (s) => s.fin_scale < 3.0 || s.fin_pct < 50,
+
         description: 'Provide confidential financial coaching, budgeting resources, and emergency grant support.',
+
         urgency: 'p2', icon: 'dollar-sign', color: 'pink'
+
       }
+
     ];
+
+
 
     let matrixChart, radarChart;
 
+
+
     document.addEventListener('DOMContentLoaded', () => {
+
       lucide.createIcons();
+
       initCharts();
+
       calculateAll();
+
     });
 
+
+
     function updateValue(key, value) {
+
       const stateKey = key.replace(/-/g, '_');
+
       state[stateKey] = parseFloat(value);
+
       
+
       const valEl = document.getElementById(`val-${key}`);
+
       if (key.includes('pct')) {
+
         valEl.innerText = `${value}%`;
+
       } else {
+
         valEl.innerText = `${parseFloat(value).toFixed(1)} / 5`;
+
       }
 
+
+
       calculateAll();
+
     }
+
+
 
     function updateOrgDetails() {
+
       state.headcount = parseInt(document.getElementById('org-headcount').value) || 100;
+
       state.industry = document.getElementById('org-industry').value;
+
       calculateAll();
+
     }
 
+
+
     // Score Calculation
+
     function calculateAll() {
+
       // Scores calculation
+
       const exhScore = (state.exh_pct / 20) * 0.5 + state.exh_scale * 0.5;
+
       const disScore = (state.dis_pct / 20) * 0.5 + state.dis_scale * 0.5;
+
       const emoScore = (state.emo_pct / 20) * 0.5 + state.emo_scale * 0.5;
+
       const cogScore = (state.cog_pct / 20) * 0.5 + state.cog_scale * 0.5;
+
+
 
       const vitalityIndex = (exhScore + disScore + emoScore + cogScore) / 4;
 
+
+
       const polScore = (state.pol_pct / 20) * 0.5 + state.pol_scale * 0.5;
+
       const demScore = (state.dem_pct / 20) * 0.5 + state.dem_scale * 0.5;
+
       const wtqScore = (state.wtq_pct / 20) * 0.5 + state.wtq_scale * 0.5;
+
       const finScore = (state.fin_pct / 20) * 0.5 + state.fin_scale * 0.5;
+
+
 
       const welfareIndex = (polScore + demScore + wtqScore + finScore) / 4;
 
+
+
       const nonEnergizedPct = Math.max(0, 100 - state.exh_pct);
+
       const affectedHeadcount = Math.round((nonEnergizedPct / 100) * state.headcount);
 
+
+
       // Update KPIs
+
       document.getElementById('kpi-burnout-index').innerText = `${vitalityIndex.toFixed(1)} / 5`;
+
       document.getElementById('kpi-welfare-index').innerText = `${welfareIndex.toFixed(1)} / 5`;
+
       document.getElementById('kpi-affected-count').innerText = `${affectedHeadcount} FTEs`;
+
       document.getElementById('kpi-affected-sub').innerText = `Est. ~${nonEnergizedPct}% low energy`;
 
+
+
       // Category RAG Badges
+
       updateCategoryBadge('badge-cat-exhaustion', exhScore);
+
       updateCategoryBadge('badge-cat-distance', disScore);
+
       updateCategoryBadge('badge-cat-emo', emoScore);
+
       updateCategoryBadge('badge-cat-cog', cogScore);
 
+
+
       updateCategoryBadge('badge-cat-pol', polScore);
+
       updateCategoryBadge('badge-cat-dem', demScore);
+
       updateCategoryBadge('badge-cat-wtq', wtqScore);
+
       updateCategoryBadge('badge-cat-fin', finScore);
 
+
+
       // Quadrant Diagnosis
+
       updateDiagnosis(welfareIndex, vitalityIndex);
 
+
+
       // Render Service Deployments
+
       renderServices(vitalityIndex);
 
+
+
       // Update Charts
+
       updateCharts(welfareIndex, vitalityIndex, [
+
         exhScore, disScore, emoScore, cogScore, polScore, demScore, wtqScore, finScore
+
       ]);
+
     }
+
+
 
     // RAG (Red, Amber, Green) Badge Update Logic
+
     function updateCategoryBadge(elementId, score) {
+
       const el = document.getElementById(elementId);
+
       if (!el) return;
 
+
+
       if (score >= 3.8) {
+
         // GREEN: Optimal / Strong
+
         el.innerText = '🟢 Optimal / Strong';
+
         el.className = 'text-[11px] font-bold text-nguGreen bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300';
+
       } else if (score >= 2.8) {
+
         // AMBER: Moderate / Caution
+
         el.innerText = '🟡 Moderate';
+
         el.className = 'text-[11px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full border border-nguYellow';
+
       } else {
+
         // RED: At Risk / Deficit
+
         el.innerText = '🔴 At Risk / Deficit';
+
         el.className = 'text-[11px] font-bold text-ragRed bg-red-100 px-2.5 py-0.5 rounded-full border border-red-300';
+
       }
+
     }
+
+
 
     function updateDiagnosis(welfare, vitality) {
+
       const badge = document.getElementById('badge-quadrant');
+
       const badgeBurnout = document.getElementById('badge-burnout');
+
       const title = document.getElementById('overview-title');
+
       const desc = document.getElementById('overview-desc');
 
+
+
       if (vitality < 2.8) {
+
         badgeBurnout.innerText = '⚠️ Low Vitality / Strain Warning';
+
         badgeBurnout.classList.remove('hidden');
+
       } else {
+
         badgeBurnout.classList.add('hidden');
+
       }
+
+
 
       if (welfare >= 3.0 && vitality >= 3.0) {
+
         badge.innerText = 'Quadrant I: High Vitality & Strong Support';
+
         badge.className = 'px-3 py-1 text-xs font-bold rounded-full bg-emerald-100 text-nguGreen border border-emerald-300';
+
         if (title) title.innerText = 'Thriving & High-Performing Environment';
+
         desc.innerText = `Strong organizational support aligns with high workforce vitality across ${state.headcount} employees in ${state.industry}.`;
+
       } else if (welfare < 3.0 && vitality >= 3.0) {
+
         badge.innerText = 'Quadrant II: Resilient Staff / Policy Gap';
+
         badge.className = 'px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-nguBlue border border-blue-300';
+
         if (title) title.innerText = 'Employee Energy Drives Success, but Support Lags';
+
         desc.innerText = `Employees maintain high personal energy, but organizational policy requires strengthening across ${state.headcount} employees.`;
+
       } else if (welfare >= 3.0 && vitality < 3.0) {
+
         badge.innerText = 'Quadrant III: Support Misalignment';
+
         badge.className = 'px-3 py-1 text-xs font-bold rounded-full bg-amber-100 text-amber-900 border border-nguYellow';
+
         if (title) title.innerText = 'Welfare Investment Not Translating to Vitality';
+
         desc.innerText = `Company offers policy support, but staff report energy depletion. Re-align execution across ${state.headcount} employees.`;
+
       } else {
+
         badge.innerText = 'Quadrant IV: Critical Vitality Deficit';
+
         badge.className = 'px-3 py-1 text-xs font-bold rounded-full bg-red-100 text-ragRed border border-red-300';
+
         if (title) title.innerText = 'Critical Energy & Welfare Deficit';
+
         desc.innerText = `Immediate intervention required across ${state.headcount} employees to boost vitality, restore stamina, and lower turnover.`;
+
       }
+
     }
 
+
+
     function renderServices(vitalityScore) {
+
       const container = document.getElementById('service-recommendations-container');
+
       container.innerHTML = '';
 
+
+
       const active = serviceDatabase.filter(s => s.trigger(state, vitalityScore));
+
       document.getElementById('total-services-count').innerText = `${active.length} Priority Services`;
 
+
+
       if (active.length === 0) {
+
         container.innerHTML = `
+
           <div class="p-4 rounded-2xl bg-emerald-50 border border-emerald-200 text-nguGreen text-xs flex items-center gap-3">
+
             <i data-lucide="check-circle" class="w-5 h-5 text-nguGreen flex-shrink-0"></i>
+
             <div>
+
               <span class="font-bold block text-slate-900">No Urgent Interventions Required</span>
+
               <span>All audit indicators reflect high workforce vitality and strong policy support. Continue periodic re-assessment.</span>
+
             </div>
+
           </div>
+
         `;
+
         updateRoadmap([], [], []);
+
         lucide.createIcons();
+
         return;
+
       }
+
+
 
       const p1 = [], p2 = [], p3 = [];
 
+
+
       active.forEach(s => {
+
         if (s.urgency === 'p1') p1.push(s.title);
+
         else if (s.urgency === 'p2') p2.push(s.title);
+
         else p3.push(s.title);
 
+
+
         const card = document.createElement('div');
+
         card.className = `p-3.5 rounded-xl border border-amber-200/80 bg-amber-50/20 hover:border-nguYellow transition shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs`;
+
         card.innerHTML = `
+
           <div class="flex items-start gap-3">
+
             <div class="p-2 rounded-xl bg-nguYellowLight text-slate-900 border border-nguYellow flex-shrink-0 mt-0.5">
+
               <i data-lucide="${s.icon}" class="w-4 h-4"></i>
+
             </div>
+
             <div>
+
               <div class="flex items-center gap-2">
+
                 <h4 class="font-bold text-slate-900">${s.title}</h4>
+
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-900 border border-amber-200">${s.category}</span>
+
               </div>
+
               <p class="text-slate-600 text-[11px] mt-0.5">${s.description}</p>
+
             </div>
+
           </div>
+
           <span class="flex-shrink-0 text-[10px] font-bold px-2.5 py-1 rounded-full ${s.urgency === 'p1' ? 'bg-red-100 text-ragRed border border-red-200' : 'bg-slate-100 text-slate-700 border border-slate-200'}">
+
             ${s.urgency === 'p1' ? 'Phase 1: Immediate' : 'Phase 2: Medium-Term'}
+
           </span>
+
         `;
+
         container.appendChild(card);
+
       });
+
+
 
       updateRoadmap(p1, p2, p3);
+
       lucide.createIcons();
+
     }
+
+
 
     function updateRoadmap(p1, p2, p3) {
+
       const render = (arr, def) => arr.length ? arr.map(i => `<li>${i}</li>`).join('') : `<li>${def}</li>`;
+
       document.getElementById('roadmap-p1').innerHTML = render(p1, 'Maintain vitality readiness');
+
       document.getElementById('roadmap-p2').innerHTML = render(p2, 'Review benefit adoption');
+
       document.getElementById('roadmap-p3').innerHTML = render(p3, 'Annual re-audit benchmark');
+
     }
+
+
 
     // Backend endpoint: paste your deployed Google Apps Script /exec URL here.
+
     // IMPORTANT: use the URL ending in /exec, not /dev.
+
     const BACKEND_URL = 'https://script.google.com/macros/s/AKfycbz7-349sVzKYgsBvw-6yc3O_5krCd1Io1WeQOZ72uoqB00ez3UQDwVkxwYvFzrRwErd/exec';
 
+
+
     // Lead Form Handler
+
     // Uses a normal POST form submission to avoid browser CORS/preflight problems
+
     // when the calculator is hosted on GitHub Pages and the backend is Apps Script.
+
     function handleFormSubmit(e) {
+
       e.preventDefault();
 
+
+
       const name = document.getElementById('lead-name').value.trim();
+
       const title = document.getElementById('lead-title').value.trim();
+
       const company = document.getElementById('lead-company').value.trim();
+
       const email = document.getElementById('lead-email').value.trim();
+
       const phone = document.getElementById('lead-phone').value.trim();
+
       const phoneInput = document.getElementById('lead-phone');
+
       const submitButton = document.querySelector('#contact-form button[type="submit"]');
 
+
+
       if (!/^\d{10}$/.test(phone)) {
+
         phoneInput.setCustomValidity('Please enter a valid 10-digit phone number.');
+
         phoneInput.reportValidity();
+
         return;
+
       }
+
       phoneInput.setCustomValidity('');
 
+
+
       if (!BACKEND_URL || BACKEND_URL.includes('PASTE_YOUR_')) {
+
         alert('The audit is ready, but the data-saving connection has not been configured yet. Please contact the site owner.');
+
         return;
+
       }
+
+
 
       const payload = {
+
         submittedAt: new Date().toISOString(),
+
         respondent: { name, title, company, email, phone },
+
         organization: { headcount: state.headcount, industry: state.industry },
+
         auditInputs: { ...state },
+
         calculated: {
+
           quadrant: document.getElementById('badge-quadrant')?.innerText || '',
+
           burnoutWarning: document.getElementById('badge-burnout')?.innerText || '',
+
           vitalityIndex: document.getElementById('kpi-burnout-index')?.innerText || '',
+
           welfareIndex: document.getElementById('kpi-welfare-index')?.innerText || '',
+
           affectedCount: document.getElementById('kpi-affected-count')?.innerText || '',
+
           affectedSub: document.getElementById('kpi-affected-sub')?.innerText || '',
+
           overviewTitle: document.getElementById('overview-title')?.innerText || '',
+
           overviewDescription: document.getElementById('overview-desc')?.innerText || '',
+
           priorityServices: Array.from(document.querySelectorAll('#service-recommendations-container > div'))
+
             .map(el => el.innerText.trim()).filter(Boolean),
+
           roadmap: {
+
             phase1: document.getElementById('roadmap-p1')?.innerText || '',
+
             phase2: document.getElementById('roadmap-p2')?.innerText || '',
+
             phase3: document.getElementById('roadmap-p3')?.innerText || ''
+
           }
+
         }
+
       };
 
+
+
       submitButton.disabled = true;
+
       submitButton.style.opacity = '0.6';
+
       submitButton.innerHTML = '<span>Saving audit…</span>';
 
+
+
       // Create a hidden iframe and regular HTML form. This is intentionally used
+
       // instead of fetch() so GitHub Pages can POST to Apps Script without a CORS
+
       // preflight request.
+
       const iframeName = 'audit-submit-frame-' + Date.now();
+
       const iframe = document.createElement('iframe');
+
       iframe.name = iframeName;
+
       iframe.style.display = 'none';
+
       document.body.appendChild(iframe);
 
+
+
       const form = document.createElement('form');
+
       form.method = 'POST';
+
       form.action = BACKEND_URL;
+
       form.target = iframeName;
+
       form.style.display = 'none';
 
+
+
       const input = document.createElement('input');
+
       input.type = 'hidden';
+
       input.name = 'payload';
+
       input.value = JSON.stringify(payload);
+
       form.appendChild(input);
+
       document.body.appendChild(form);
 
+
+
       try {
+
         form.submit();
 
+
+
         // The browser has handed the POST to Apps Script. We do not try to read
+
         // the cross-origin response; the backend writes the submission to Sheets.
+
         // Move to the analysis page after the respondent details have been submitted.
+
         // The input page is hidden entirely; the analysis occupies the full content area.
+
         const inputPanel = document.getElementById('input-panel');
+
         const dashboardPanel = document.getElementById('dashboard-panel');
+
         const mainContent = document.querySelector('main');
 
+
+
         inputPanel.classList.add('hidden');
+
         dashboardPanel.classList.remove('hidden');
+
         dashboardPanel.classList.remove('lg:col-span-6');
+
         dashboardPanel.classList.add('lg:col-span-12');
 
+
+
         // Switch from the input-page grid to a full-width analysis page.
+
         mainContent.classList.remove('grid', 'grid-cols-1', 'lg:grid-cols-12', 'gap-8');
+
         mainContent.classList.add('block');
 
+
+
         // Take the user directly to the top of the analysis page.
+
         window.scrollTo({ top: 0, behavior: 'smooth' });
 
+
+
         // Recalculate after the analysis page becomes visible so the charts size correctly.
+
         requestAnimationFrame(() => {
+
           calculateAll();
+
           matrixChart?.resize();
+
           radarChart?.resize();
+
         });
+
+
 
         setTimeout(() => {
+
           form.remove();
+
           iframe.remove();
+
         }, 5000);
+
       } catch (error) {
+
         console.error('Audit submission failed:', error);
+
         submitButton.disabled = false;
+
         submitButton.style.opacity = '1';
+
         submitButton.innerHTML = '<i data-lucide="send" class="w-4 h-4 text-slate-900"></i> Submit Audit & Request Customized Implementation Plan';
+
         lucide.createIcons();
+
         alert('We could not submit the audit. Please try again.');
+
       }
+
     }
+
+
 
     function closeModal() {
+
       document.getElementById('submit-modal').classList.add('hidden');
+
     }
+
+
 
     // Custom plugin: draws coloured quadrant backgrounds + labels before data renders
+
     const quadrantPlugin = {
+
       id: 'quadrantPlugin',
+
       beforeDraw(chart) {
+
         const { ctx, chartArea: { left, right, top, bottom, width, height }, scales: { x, y } } = chart;
+
         const midX = x.getPixelForValue(3.0);
+
         const midY = y.getPixelForValue(3.0);
 
+
+
         // Quadrant background fills
+
         const quads = [
+
           { x1: left,  y1: top,    x2: midX,  y2: midY,   color: 'rgba(59,130,246,0.07)',  label: 'II: Resilient /\nPolicy Gap',         align: 'left',  lx: left + 6,   ly: top + 10 },
+
           { x1: midX,  y1: top,    x2: right,  y2: midY,  color: 'rgba(76,160,92,0.08)',   label: 'I: High Vitality &\nStrong Support',  align: 'left',  lx: midX + 6,  ly: top + 10 },
+
           { x1: left,  y1: midY,   x2: midX,  y2: bottom,  color: 'rgba(220,38,38,0.07)',  label: 'IV: Critical\nVitality Deficit',      align: 'left',  lx: left + 6,   ly: midY + 10 },
+
           { x1: midX,  y1: midY,   x2: right,  y2: bottom, color: 'rgba(244,184,66,0.10)', label: 'III: Support\nMisalignment',          align: 'left',  lx: midX + 6,  ly: midY + 10 },
+
         ];
 
+
+
         quads.forEach(q => {
+
           ctx.save();
+
           ctx.fillStyle = q.color;
+
           ctx.fillRect(q.x1, q.y1, q.x2 - q.x1, q.y2 - q.y1);
+
           ctx.restore();
+
         });
+
+
 
         // Divider lines
+
         ctx.save();
+
         ctx.strokeStyle = '#F4B842';
+
         ctx.lineWidth = 1.5;
+
         ctx.setLineDash([5, 4]);
+
         // Vertical
+
         ctx.beginPath(); ctx.moveTo(midX, top); ctx.lineTo(midX, bottom); ctx.stroke();
+
         // Horizontal
+
         ctx.beginPath(); ctx.moveTo(left, midY); ctx.lineTo(right, midY); ctx.stroke();
+
         ctx.setLineDash([]);
+
         ctx.restore();
+
+
 
         // Quadrant labels
+
         quads.forEach(q => {
+
           const lines = q.label.split('\n');
+
           ctx.save();
+
           ctx.font = '500 9px Poppins, sans-serif';
+
           ctx.fillStyle = 'rgba(30,30,30,0.55)';
+
           lines.forEach((line, i) => {
+
             ctx.fillText(line, q.lx, q.ly + i * 12);
+
           });
+
           ctx.restore();
+
         });
 
+
+
         // Threshold label on divider
+
         ctx.save();
+
         ctx.font = '700 8px Poppins, sans-serif';
+
         ctx.fillStyle = '#EE8341';
+
         ctx.fillText('3.0', midX + 2, bottom - 3);
+
         ctx.fillText('3.0', left + 2, midY - 3);
+
         ctx.restore();
+
       }
+
     };
 
+
+
     function initCharts() {
+
       // 1. Scatter Quadrant Matrix Chart
+
       const ctxMatrix = document.getElementById('matrixChart').getContext('2d');
+
       matrixChart = new Chart(ctxMatrix, {
+
         type: 'scatter',
+
         plugins: [quadrantPlugin],
+
         data: {
+
           datasets: [{
+
             label: 'Your Organization',
+
             data: [{ x: 3.0, y: 3.5 }],
+
             backgroundColor: '#EE8341',
+
             borderColor: '#ffffff',
+
             borderWidth: 2,
+
             pointRadius: 10,
+
             pointHoverRadius: 13,
+
             pointStyle: 'circle'
+
           }]
+
         },
+
         options: {
+
           responsive: true,
+
           maintainAspectRatio: false,
+
           scales: {
+
             x: {
+
               min: 1, max: 5,
+
               title: { display: true, text: '← Organizational Welfare Drivers (1–5) →', font: { size: 8, family: 'Poppins', weight: '600' }, color: '#64748b' },
+
               ticks: { font: { size: 8 }, color: '#94a3b8', stepSize: 1 },
+
               grid: { color: '#f1f5f9', lineWidth: 1 },
+
               border: { color: '#e2e8f0' }
+
             },
+
             y: {
+
               min: 1, max: 5,
+
               title: { display: true, text: '← Workforce Vitality & Resilience (1–5) →', font: { size: 8, family: 'Poppins', weight: '600' }, color: '#64748b' },
+
               ticks: { font: { size: 8 }, color: '#94a3b8', stepSize: 1 },
+
               grid: { color: '#f1f5f9', lineWidth: 1 },
+
               border: { color: '#e2e8f0' }
+
             }
+
           },
+
           plugins: {
+
             legend: { display: false },
+
             tooltip: {
+
               callbacks: {
+
                 label: (ctx) => {
+
                   const welfare = ctx.parsed.x.toFixed(1);
+
                   const vitality = ctx.parsed.y.toFixed(1);
+
                   const q = (ctx.parsed.x >= 3.0 && ctx.parsed.y >= 3.0) ? 'Q I: High Vitality'
+
                           : (ctx.parsed.x < 3.0 && ctx.parsed.y >= 3.0) ? 'Q II: Policy Gap'
+
                           : (ctx.parsed.x >= 3.0 && ctx.parsed.y < 3.0) ? 'Q III: Misalignment'
+
                           : 'Q IV: Critical Deficit';
+
                   return [`Welfare: ${welfare}  |  Vitality: ${vitality}`, q];
+
                 }
+
               }
+
             }
+
           }
+
         }
+
       });
+
+
 
       // 2. 8-Axis Radar Chart
+
       const ctxRadar = document.getElementById('radarChart').getContext('2d');
+
       radarChart = new Chart(ctxRadar, {
+
         type: 'radar',
+
         data: {
+
           labels: [
+
             'Energy & Vitality', 'Mental Engagement', 'Emotional Resilience', 'Cognitive Focus',
+
             'Health Policy', 'Workload Balance', 'Time Disconnection', 'Financial Wellbeing'
+
           ],
+
           datasets: [{
+
             label: 'Audit Score',
+
             data: [3.5, 3.5, 3.8, 3.6, 3.2, 2.8, 3.1, 2.9],
+
             backgroundColor: 'rgba(244, 184, 66, 0.25)',
+
             borderColor: '#EE8341',
+
             borderWidth: 2.5,
+
             pointBackgroundColor: '#4CA05C',
+
             pointBorderColor: '#ffffff',
+
             pointRadius: 4
+
           }]
+
         },
+
         options: {
+
           responsive: true,
+
           maintainAspectRatio: false,
+
           scales: {
+
             r: {
+
               min: 1, max: 5,
+
               ticks: { display: false, stepSize: 1 },
+
               pointLabels: { font: { family: 'Poppins', size: 9, weight: '500' } }
+
             }
+
           },
+
           plugins: { legend: { display: false } }
+
         }
+
       });
+
     }
+
+
 
     function updateCharts(welfare, vitality, categoryScores) {
+
       if (matrixChart) {
+
         matrixChart.data.datasets[0].data = [{ x: welfare, y: vitality }];
+
         matrixChart.update();
+
       }
 
+
+
       if (radarChart) {
+
         radarChart.data.datasets[0].data = categoryScores;
+
         radarChart.update();
+
       }
+
     }
+
   </script>
+
 </body>
-</html>
+
+</html> resend the entire file with the change
